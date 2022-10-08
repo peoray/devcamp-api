@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 // confug
 import { ConfigModule } from '@nestjs/config';
+import { BootcampsModule } from './bootcamps/bootcamps.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
+    BootcampsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
