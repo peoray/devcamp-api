@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { BootcampsService } from './bootcamps.service';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
@@ -29,5 +37,10 @@ export class BootcampsController {
     @Body() data: UpdateBootcampDto,
   ): Promise<Bootcamp> {
     return this.bootcampService.update(id, data);
+  }
+
+  @Delete(':id')
+  async deleteBootcamp(@Param('id') id: string): Promise<Bootcamp> {
+    return this.bootcampService.delete(id);
   }
 }

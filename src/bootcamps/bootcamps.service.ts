@@ -25,11 +25,17 @@ export class BootcampsService {
     const bootcamp = this.bootcampModel.findById(id);
     return bootcamp;
   }
+
   async update(id: string, data: UpdateBootcampDto): Promise<Bootcamp> {
     const bootcamp = this.bootcampModel.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
+    return bootcamp;
+  }
+
+  async delete(id: string): Promise<Bootcamp> {
+    const bootcamp = this.bootcampModel.findByIdAndDelete(id);
     return bootcamp;
   }
 }
