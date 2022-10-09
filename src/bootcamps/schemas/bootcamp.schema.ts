@@ -36,8 +36,8 @@ export class Bootcamp {
   @Prop({ type: Object, ref: 'Location' })
   location: Location;
 
-  @Prop({ unique: true })
-  careers: Careers[];
+  @Prop({ type: [String], enum: Careers })
+  careers!: Careers;
 
   @Prop({})
   averageRating: number;

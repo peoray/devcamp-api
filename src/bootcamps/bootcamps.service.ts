@@ -11,7 +11,17 @@ export class BootcampsService {
   ) {}
 
   async create(data: CreateBootcampDto): Promise<Bootcamp> {
-    const bootcamp = this.bootcampModel.create(data);
+    const bootcamp = await this.bootcampModel.create(data);
+    return bootcamp;
+  }
+
+  async findAll(): Promise<Bootcamp[]> {
+    const bootcamps = await this.bootcampModel.find();
+    return bootcamps;
+  }
+
+  async findOne(id: string): Promise<Bootcamp> {
+    const bootcamp = this.bootcampModel.findById(id);
     return bootcamp;
   }
 }

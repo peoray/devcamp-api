@@ -15,14 +15,6 @@ import {
 } from 'class-validator';
 import { Careers } from '../schemas/bootcamp.schema';
 
-// class Location {
-//   @IsString()
-//   code: string;
-
-//   @IsString() // To make a field optional you can add @IsOptional
-//   name: string;
-// }
-
 export class CreateBootcampDto {
   @IsString()
   @IsNotEmpty()
