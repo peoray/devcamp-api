@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
+import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
 import { Bootcamp, BootcampDocument } from './schemas/bootcamp.schema';
 
 @Injectable()
@@ -22,6 +23,13 @@ export class BootcampsService {
 
   async findOne(id: string): Promise<Bootcamp> {
     const bootcamp = this.bootcampModel.findById(id);
+    return bootcamp;
+  }
+  async update(id: string, data: UpdateBootcampDto): Promise<Bootcamp> {
+    const bootcamp = this.bootcampModel.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
     return bootcamp;
   }
 }
