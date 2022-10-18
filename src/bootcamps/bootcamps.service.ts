@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
 import { Bootcamp, BootcampDocument } from './schemas/bootcamp.schema';
@@ -11,6 +15,12 @@ export class BootcampsService {
     @InjectModel('Bootcamp') private bootcampModel: Model<BootcampDocument>,
   ) {}
 
+  validateMongoId = (id: string) => {
+    const isValid = mongoose.isValidObjectId(id);
+    if (!isValid) throw new BadRequestException('Wrong mongoose ID error');
+    return true;
+  };
+
   async create(data: CreateBootcampDto): Promise<Bootcamp> {
     const bootcamp = await this.bootcampModel.create(data);
     return bootcamp;
@@ -18,24 +28,41 @@ export class BootcampsService {
 
   async findAll(): Promise<Bootcamp[]> {
     const bootcamps = await this.bootcampModel.find();
+    // if (!bootcamps.length)
+    //   return {
+    //     data: bootcamps,
+    //   };
     return bootcamps;
   }
 
   async findOne(id: string): Promise<Bootcamp> {
-    const bootcamp = this.bootcampModel.findById(id);
+    await this.validateMongoId(id);
+
+    const bootcamp = await this.bootcampModel.findById(id);
+    if (!bootcamp) throw new NotFoundException('Bootcamp does not exist');
     return bootcamp;
   }
 
   async update(id: string, data: UpdateBootcampDto): Promise<Bootcamp> {
-    const bootcamp = this.bootcampModel.findByIdAndUpdate(id, data, {
+    await this.validateMongoId(id);
+
+    const bootcamp = await this.bootcampModel.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
+
+    if (!bootcamp) throw new NotFoundException('Bootcamp does not exist');
+
     return bootcamp;
   }
 
   async delete(id: string): Promise<Bootcamp> {
-    const bootcamp = this.bootcampModel.findByIdAndDelete(id);
+    await this.validateMongoId(id);
+
+    const bootcamp = await this.bootcampModel.findByIdAndDelete(id);
+
+    if (!bootcamp) throw new NotFoundException('Bootcamp does not exist');
+
     return bootcamp;
   }
 }

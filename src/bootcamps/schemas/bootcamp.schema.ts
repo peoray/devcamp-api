@@ -33,6 +33,9 @@ export class Bootcamp {
   @Prop({ trim: true, unique: true })
   email: string;
 
+  @Prop({ trim: true })
+  address: string;
+
   @Prop({ type: Object, ref: 'Location' })
   location: Location;
 

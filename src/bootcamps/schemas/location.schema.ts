@@ -6,7 +6,7 @@ export class Location {
   type: string;
 
   @Prop({ index: '2dsphere' })
-  coordinates: [number];
+  coordinates: number[];
 
   @Prop()
   formattedAddress: string;
