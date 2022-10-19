@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import geocoder from 'src/utils/geocoder';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
 import { Bootcamp, BootcampDocument } from './schemas/bootcamp.schema';
@@ -64,5 +65,28 @@ export class BootcampsService {
     if (!bootcamp) throw new NotFoundException('Bootcamp does not exist');
 
     return bootcamp;
+  }
+
+  async getBootcampsInRadius(
+    zipcode: string,
+    distance: number,
+  ): Promise<Bootcamp[]> {
+    const loc = await geocoder(zipcode);
+
+    console.log(loc);
+
+    const lat = loc.coordinates[1];
+    const lng = loc.coordinates[0];
+
+    // Calc radius using radians
+    // Divide dist by radius of Earth
+    // Earth Radius = 3,963 mi / 6,378 km
+    const radius = distance / 3963;
+
+    const bootcamps = await this.bootcampModel.find({
+      location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+    });
+
+    return bootcamps;
   }
 }

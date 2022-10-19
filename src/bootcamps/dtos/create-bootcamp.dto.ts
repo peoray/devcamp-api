@@ -53,13 +53,13 @@ export class CreateBootcampDto {
   })
   readonly careers: Careers;
 
-  @IsNumber()
-  @Min(1, { message: 'Rating must be at least 1' })
-  @Max(10, { message: 'Rating must can not be more than 10' })
-  readonly averageRating: number;
+  // @IsNumber()
+  // @Min(1, { message: 'Rating must be at least 1' })
+  // @Max(10, { message: 'Rating must can not be more than 10' })
+  // readonly averageRating: number;
 
-  @IsNumber()
-  averageCost: number;
+  // @IsNumber()
+  // averageCost: number;
 
   @IsBoolean()
   readonly housing: boolean;

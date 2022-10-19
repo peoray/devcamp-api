@@ -43,4 +43,12 @@ export class BootcampsController {
   async deleteBootcamp(@Param('id') id: string): Promise<Bootcamp> {
     return this.bootcampService.delete(id);
   }
+
+  @Get('radius/:zipcode/:distance')
+  async getBootcampsInRadius(
+    @Param('zipcode') zipcode: string,
+    @Param('distance') distance: number,
+  ): Promise<Bootcamp[]> {
+    return this.bootcampService.getBootcampsInRadius(zipcode, distance);
+  }
 }

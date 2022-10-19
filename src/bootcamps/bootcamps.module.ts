@@ -20,7 +20,6 @@ import geocoder from 'src/utils/geocoder';
             bootcamp.slug = slugifyName(bootcamp.name);
 
             const location = await geocoder(bootcamp.address);
-            // console.log(location);
 
             bootcamp.location = location;
           });

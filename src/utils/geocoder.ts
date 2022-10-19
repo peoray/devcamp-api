@@ -5,7 +5,7 @@ import { Location } from 'src/bootcamps/schemas/location.schema';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const NodeGeocoder = require('node-geocoder');
 
-async function geocoder(address: string) {
+async function geocoder(arg: string) {
   const options = {
     provider: process.env.GEOCODER_PROVIDER,
     httpAdapter: 'https',
@@ -15,7 +15,7 @@ async function geocoder(address: string) {
 
   const nodeGeocoder = NodeGeocoder(options);
 
-  const loc = await nodeGeocoder.geocode(address);
+  const loc = await nodeGeocoder.geocode(arg);
 
   const location: Location = {
     type: 'Point',
