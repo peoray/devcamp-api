@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 // import { Query } from 'express-serve-static-core';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, FilterQuery } from 'mongoose';
 import geocoder from 'src/utils/geocoder';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
@@ -30,14 +30,39 @@ export class BootcampsService {
   }
 
   async findAll(query: Query): Promise<Bootcamp[]> {
+    const { select, sort } = query;
     const reqQuery = { ...query };
-    let queryStr = JSON.stringify(query);
+
+    // fields to exclude
+    const removeFields = ['select', 'sort', 'page', 'limit'];
+    // loop over removeFields and delete them from reqQuery
+    removeFields.forEach((param) => delete reqQuery[param]);
+
+    let queryStr = JSON.stringify(reqQuery);
+
     queryStr = queryStr.replace(
       /\b(gt|gte|lt|lte|in)\b/g,
       (match) => `$${match}`,
     );
 
-    const bootcamps = await this.bootcampModel.find(JSON.parse(queryStr));
+    let request = this.bootcampModel.find(JSON.parse(queryStr));
+
+    if (select) {
+      const selectFields = (select as string).split(',').join(' ');
+      console.log(selectFields);
+      request = request.select(selectFields);
+    }
+
+    if (sort) {
+      const sortBy = (sort as string).split(',').join(' ');
+      console.log(sortBy);
+      request = request.sort(sortBy);
+    } else {
+      // sort by createdAt
+      request = request.sort('-createdAt');
+    }
+
+    const bootcamps = await request;
     // if (!bootcamps.length)
     //   return {
     //     data: bootcamps,

@@ -25,7 +25,6 @@ export class BootcampsController {
 
   @Get()
   async findBootcamps(@Query() query: ExpressQuery): Promise<Bootcamp[]> {
-    console.log(query);
     return this.bootcampService.findAll(query);
   }
 
