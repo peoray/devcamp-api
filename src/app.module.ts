@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 // confug
 import { ConfigModule } from '@nestjs/config';
 import { BootcampsModule } from './bootcamps/bootcamps.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BootcampsModule } from './bootcamps/bootcamps.module';
       useUnifiedTopology: true,
     }),
     BootcampsModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
