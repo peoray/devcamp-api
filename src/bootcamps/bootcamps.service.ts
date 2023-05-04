@@ -45,7 +45,9 @@ export class BootcampsService {
       (match) => `$${match}`,
     );
 
-    let request = this.bootcampModel.find(JSON.parse(queryStr));
+    const parsedQueryStr = JSON.parse(queryStr);
+
+    let request = this.bootcampModel.find(parsedQueryStr);
 
     if (select) {
       const selectFields = (select as string).split(',').join(' ');
@@ -55,12 +57,39 @@ export class BootcampsService {
 
     if (sort) {
       const sortBy = (sort as string).split(',').join(' ');
-      console.log(sortBy);
       request = request.sort(sortBy);
     } else {
       // sort by createdAt
       request = request.sort('-createdAt');
     }
+
+    // pagination
+    const page = parseInt(query.page as string) || 1;
+    const limit = parseInt(query.limit as string) || 1;
+    const startIndex = (page - 1) * limit;
+
+    request = request.skip(startIndex).limit(limit);
+
+    const endIndex = page * limit;
+    const total = await this.bootcampModel.countDocuments(parsedQueryStr);
+
+    console.log(total);
+
+    // const pager = {
+    //   limit,
+    //   prev: start_index > 0 ? page - 1 : null,
+    //   next: end_index < total ? page + 1 : null,
+    //   current: page,
+    //   query: req.url,
+    //   total,
+    // };
+
+    // if (endIndex < total) {
+    //   request = request.append({ nextPage: page + 1 });
+    // }
+    // if (startIndex > 0) {
+    //   request = request.append({ prevPage: page - 1 });
+    // }
 
     const bootcamps = await request;
     // if (!bootcamps.length)
