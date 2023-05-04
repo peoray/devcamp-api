@@ -4,11 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+// import { Query } from 'express-serve-static-core';
 import mongoose, { Model } from 'mongoose';
 import geocoder from 'src/utils/geocoder';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
 import { Bootcamp, BootcampDocument } from './schemas/bootcamp.schema';
+import { Query } from 'express-serve-static-core';
 
 @Injectable()
 export class BootcampsService {
@@ -27,8 +29,15 @@ export class BootcampsService {
     return bootcamp;
   }
 
-  async findAll(): Promise<Bootcamp[]> {
-    const bootcamps = await this.bootcampModel.find();
+  async findAll(query: Query): Promise<Bootcamp[]> {
+    const reqQuery = { ...query };
+    let queryStr = JSON.stringify(query);
+    queryStr = queryStr.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`,
+    );
+
+    const bootcamps = await this.bootcampModel.find(JSON.parse(queryStr));
     // if (!bootcamps.length)
     //   return {
     //     data: bootcamps,
