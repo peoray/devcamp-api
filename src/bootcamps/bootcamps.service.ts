@@ -1,28 +1,18 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-// import { Query } from 'express-serve-static-core';
-import mongoose, { Model, FilterQuery } from 'mongoose';
+import { Model } from 'mongoose';
 import geocoder from 'src/utils/geocoder';
 import { CreateBootcampDto } from './dtos/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dtos/update-bootcamp.dto';
 import { Bootcamp, BootcampDocument } from './schemas/bootcamp.schema';
 import { Query } from 'express-serve-static-core';
+import { validateMongoId } from '../utils/validate-mongo-id';
 
 @Injectable()
 export class BootcampsService {
   constructor(
     @InjectModel('Bootcamp') private bootcampModel: Model<BootcampDocument>,
   ) {}
-
-  validateMongoId = (id: string) => {
-    const isValid = mongoose.isValidObjectId(id);
-    if (!isValid) throw new BadRequestException('Wrong mongoose ID error');
-    return true;
-  };
 
   async create(data: CreateBootcampDto): Promise<Bootcamp> {
     const bootcamp = await this.bootcampModel.create(data);
@@ -100,7 +90,7 @@ export class BootcampsService {
   }
 
   async findOne(id: string): Promise<Bootcamp> {
-    await this.validateMongoId(id);
+    await validateMongoId(id);
 
     const bootcamp = await this.bootcampModel.findById(id);
     if (!bootcamp) throw new NotFoundException('Bootcamp does not exist');
@@ -108,7 +98,7 @@ export class BootcampsService {
   }
 
   async update(id: string, data: UpdateBootcampDto): Promise<Bootcamp> {
-    await this.validateMongoId(id);
+    await validateMongoId(id);
 
     const bootcamp = await this.bootcampModel.findByIdAndUpdate(id, data, {
       new: true,
@@ -121,7 +111,7 @@ export class BootcampsService {
   }
 
   async delete(id: string): Promise<Bootcamp> {
-    await this.validateMongoId(id);
+    await validateMongoId(id);
 
     const bootcamp = await this.bootcampModel.findByIdAndDelete(id);
 
