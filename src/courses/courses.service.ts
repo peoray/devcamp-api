@@ -15,7 +15,12 @@ export class CoursesService {
   }
 
   async getCoursesByBoootcamp(bootcampId: string): Promise<CourseDocument[]> {
+    console.log(bootcampId);
     await validateMongoId(bootcampId);
-    return this.courseModel.find({ bootcamp: bootcampId }).exec();
+
+    return this.courseModel
+      .find({ bootcamp: bootcampId })
+      .populate('bootcamp', 'name description')
+      .exec();
   }
 }

@@ -22,6 +22,7 @@ import geocoder from 'src/utils/geocoder';
             const location = await geocoder(bootcamp.address);
 
             bootcamp.location = location;
+            bootcamp.address = undefined;
           });
           return schema;
         },

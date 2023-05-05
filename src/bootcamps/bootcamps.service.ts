@@ -37,11 +37,10 @@ export class BootcampsService {
 
     const parsedQueryStr = JSON.parse(queryStr);
 
-    let request = this.bootcampModel.find(parsedQueryStr);
+    let request = this.bootcampModel.find(parsedQueryStr).populate('courses');
 
     if (select) {
       const selectFields = (select as string).split(',').join(' ');
-      console.log(selectFields);
       request = request.select(selectFields);
     }
 
@@ -55,15 +54,13 @@ export class BootcampsService {
 
     // pagination
     const page = parseInt(query.page as string) || 1;
-    const limit = parseInt(query.limit as string) || 1;
+    const limit = parseInt(query.limit as string) || 10;
     const startIndex = (page - 1) * limit;
 
     request = request.skip(startIndex).limit(limit);
 
     const endIndex = page * limit;
     const total = await this.bootcampModel.countDocuments(parsedQueryStr);
-
-    console.log(total);
 
     // const pager = {
     //   limit,

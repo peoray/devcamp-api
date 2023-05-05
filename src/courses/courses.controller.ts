@@ -8,6 +8,7 @@ export class CoursesController {
 
   @Get()
   async getCourses(): Promise<Course[]> {
+    console.log('hello');
     return this.courseService.getCourses();
   }
 
@@ -15,6 +16,7 @@ export class CoursesController {
   async getCoursesByBootcamp(
     @Param('bootcampId') bootcampId: string,
   ): Promise<Course[]> {
+    console.log('vsde');
     return this.courseService.getCoursesByBoootcamp(bootcampId);
   }
 }

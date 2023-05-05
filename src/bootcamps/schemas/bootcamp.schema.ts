@@ -13,7 +13,12 @@ export enum Careers {
   OTHER = 'Other',
 }
 
-@Schema({ timestamps: true, versionKey: false })
+@Schema({
+  timestamps: true,
+  versionKey: false,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+})
 export class Bootcamp {
   @Prop({ unique: true, trim: true })
   name: string;
@@ -62,6 +67,26 @@ export class Bootcamp {
 
   @Prop({})
   acceptGi: boolean;
+
+  // set virtuals for courses
 }
 
 export const BootcampSchema = SchemaFactory.createForClass(Bootcamp);
+
+// Add a virtual property 'courses' that retrieves all courses associated with this bootcamp
+BootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false,
+});
+
+// Override the default 'toJSON()' method to include the virtual 'id' property and exclude the '__v' property
+BootcampSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: (doc, ret) => {
+    delete ret._id;
+    delete ret.__v;
+  },
+});
